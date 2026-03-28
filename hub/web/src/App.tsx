@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Properties from './pages/Properties';
 import JoinRequests from './pages/JoinRequests';
 import Settings from './pages/Settings';
+import MapView from './pages/MapView';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="properties" element={<Properties />} />
+        <Route path="properties/map" element={<MapView />} />
         <Route path="join-requests" element={<JoinRequests />} />
         <Route path="settings" element={<Settings />} />
         <Route path="*" element={<Navigate to="/" />} />

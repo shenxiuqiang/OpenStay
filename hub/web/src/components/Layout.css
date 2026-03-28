@@ -81,6 +81,37 @@
   min-height: 100vh;
 }
 
+.nav-group {
+  position: relative;
+}
+
+.nav-sub-items {
+  padding-left: 2.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.nav-sub-item {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.8125rem;
+  transition: all 0.2s;
+  border-radius: 6px;
+  margin-right: 0.75rem;
+}
+
+.nav-sub-item:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.nav-sub-item.active {
+  color: var(--primary-color);
+  background: var(--bg-tertiary);
+  font-weight: 500;
+}
+
 @media (max-width: 768px) {
   .sidebar {
     width: 60px;
@@ -89,7 +120,8 @@
   .logo,
   .tagline,
   .nav-label,
-  .sidebar-footer {
+  .sidebar-footer,
+  .nav-sub-items {
     display: none;
   }
   

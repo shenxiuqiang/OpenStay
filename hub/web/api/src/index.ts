@@ -13,6 +13,7 @@ import joinRequestRoutes from './routes/join-request.js';
 import propertyRoutes from './routes/property.js';
 import syncRoutes from './routes/sync.js';
 import publicRoutes from './routes/public.js';
+import mapConfigRoutes from './routes/map-config.js';
 
 dotenv.config();
 
@@ -49,6 +50,7 @@ app.use('/api/join-requests', joinRequestRoutes);
 app.use('/api/properties', propertyRoutes);
 app.use('/api/sync', syncRoutes);
 app.use('/api/public', publicRoutes);
+app.use('/api/hub/map-config', mapConfigRoutes);
 
 // Static files (production build)
 const staticPath = path.join(__dirname, '../../dist');

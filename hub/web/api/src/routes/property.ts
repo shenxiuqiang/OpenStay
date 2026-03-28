@@ -138,7 +138,51 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-// Get featured properties
+// Get all properties with coordinates for map view
+router.get('/all/coords', async (_req, res, next) => {
+  try {
+    const properties = await IndexedProperty.findAll({
+      attributes: [
+        'id',
+        'propertyId',
+        'name',
+        'city',
+        'country',
+        'minPrice',
+        'maxPrice',
+        'latitude',
+        'longitude',
+        'propertyType',
+        'syncStatus',
+        'thumbnail',
+      ],
+      where: {
+        latitude: { $ne: null },
+        longitude: { $ne: null },
+      },
+    });
+
+    const mapped = properties.map((p) => ({
+      id: p.propertyId,
+      name: p.name,
+      city: p.city,
+      country: p.country,
+      price: p.minPrice,
+      latitude: p.latitude,
+      longitude: p.longitude,
+      type: p.tier || 'basic',
+      status: p.syncStatus === 'synced' ? 'active' : 'pending',
+      image: p.coverImageUrl,
+    }));
+
+    res.json({
+      success: true,
+      data: mapped,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 router.get('/featured/list', async (_req, res, next) => {
   try {
     const properties = await IndexedProperty.findAll({

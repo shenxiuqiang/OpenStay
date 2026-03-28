@@ -5,12 +5,13 @@ import './Layout.css';
 function Layout() {
   const location = useLocation();
 
-  const navItems = [
+  const mainNavItems = [
     { path: '/', label: '概览', icon: '📊' },
-    { path: '/properties', label: '房源', icon: '🏨' },
     { path: '/join-requests', label: '入驻申请', icon: '📋' },
     { path: '/settings', label: '设置', icon: '⚙️' },
   ];
+
+  const isPropertiesActive = location.pathname.startsWith('/properties');
 
   return (
     <div className="layout">
@@ -21,7 +22,7 @@ function Layout() {
         </div>
         
         <nav className="sidebar-nav">
-          {navItems.map((item) => (
+          {mainNavItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
@@ -31,6 +32,33 @@ function Layout() {
               <span className="nav-label">{item.label}</span>
             </Link>
           ))}
+          
+          <div className="nav-group">
+            <Link
+              to="/properties"
+              className={`nav-item ${isPropertiesActive ? 'active' : ''}`}
+            >
+              <span className="nav-icon">🏨</span>
+              <span className="nav-label">房源</span>
+            </Link>
+            
+            {isPropertiesActive && (
+              <div className="nav-sub-items">
+                <Link
+                  to="/properties"
+                  className={`nav-sub-item ${location.pathname === '/properties' ? 'active' : ''}`}
+                >
+                  📋 列表视图
+                </Link>
+                <Link
+                  to="/properties/map"
+                  className={`nav-sub-item ${location.pathname === '/properties/map' ? 'active' : ''}`}
+                >
+                  🗺️ 地图视图
+                </Link>
+              </div>
+            )}
+          </div>
         </nav>
         
         <div className="sidebar-footer">
