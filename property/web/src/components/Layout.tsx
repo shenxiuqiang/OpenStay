@@ -5,12 +5,13 @@ import './Layout.css';
 function Layout() {
   const location = useLocation();
 
-  const navItems = [
+  const mainNavItems = [
     { path: '/', label: '概览', icon: '🏠' },
     { path: '/rooms', label: '房型', icon: '🛏️' },
     { path: '/bookings', label: '订单', icon: '📋' },
-    { path: '/settings', label: '设置', icon: '⚙️' },
   ];
+
+  const isSettingsActive = location.pathname.startsWith('/settings');
 
   return (
     <div className="layout">
@@ -21,7 +22,7 @@ function Layout() {
         </div>
         
         <nav className="sidebar-nav">
-          {navItems.map((item) => (
+          {mainNavItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
@@ -31,6 +32,33 @@ function Layout() {
               <span className="nav-label">{item.label}</span>
             </Link>
           ))}
+          
+          <div className="nav-group">
+            <Link
+              to="/settings"
+              className={`nav-item ${isSettingsActive ? 'active' : ''}`}
+            >
+              <span className="nav-icon">⚙️</span>
+              <span className="nav-label">设置</span>
+            </Link>
+            
+            {isSettingsActive && (
+              <div className="nav-sub-items">
+                <Link
+                  to="/settings"
+                  className={`nav-sub-item ${location.pathname === '/settings' ? 'active' : ''}`}
+                >
+                  基本信息
+                </Link>
+                <Link
+                  to="/settings/map"
+                  className={`nav-sub-item ${location.pathname === '/settings/map' ? 'active' : ''}`}
+                >
+                  🗺️ 地图设置
+                </Link>
+              </div>
+            )}
+          </div>
         </nav>
         
         <div className="sidebar-footer">

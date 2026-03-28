@@ -4,6 +4,10 @@
 // 主题
 export { theme, colors, spacing, borderRadius, shadows, typography, breakpoints, transitions, zIndex } from './themes/default/index.js';
 
+// 地图配置
+export { MAP_PROVIDERS, DEFAULT_MAP_CONFIG, getMapScriptUrl, validateMapKey, getMapProvider } from './utils/map-config.js';
+export type { MapProvider, MapConfig } from './utils/map-config.js';
+
 // 组件
 export { Button } from './components/Button/index.js';
 export type { ButtonProps } from './components/Button/index.js';
@@ -16,3 +20,6 @@ export type { InputProps } from './components/Input/index.js';
 
 export { Badge } from './components/Badge/index.js';
 export type { BadgeProps } from './components/Badge/index.js';
+
+export { UniversalMap } from './components/UniversalMap/index.js';
+export type { MapMarker, UniversalMapProps } from './components/UniversalMap/index.js';

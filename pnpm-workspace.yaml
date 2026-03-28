@@ -2,4 +2,4 @@ packages:
   - "property/web"
   - "hub/web"
   - "travel-app/*"
-  - "theme/*"
+  - "theme"
