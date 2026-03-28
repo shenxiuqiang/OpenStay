@@ -1,0 +1,30 @@
+name: openstay-property
+description: OpenStay Property Studio - 单店数字店面 Blocklet
+version: 0.1.0
+title: OpenStay Property
+logo: logo.png
+group: dapp
+main: api/dist/index.js
+files:
+  - api/dist
+  - dist
+  - logo.png
+interfaces:
+  - type: web
+    name: publicUrl
+    path: /
+    prefix: "*"
+    port: 3030
+    protocol: http
+credentials:
+  - name: owner
+    description: Property Owner DID
+    required: true
+    trustedIssuers: []
+    trustedHooks: []
+    tag: auth
+requirements:
+  - name: "@blocklet/node"
+    version: "^1.16.0"
+  - name: "@blocklet/react"
+    version: "^1.16.0"
