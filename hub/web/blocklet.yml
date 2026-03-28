@@ -1,0 +1,30 @@
+name: openstay-hub
+description: OpenStay Hospitality Hub - 聚合平台 Blocklet
+version: 0.1.0
+title: OpenStay Hub
+logo: logo.png
+group: dapp
+main: api/dist/index.js
+files:
+  - api/dist
+  - dist
+  - logo.png
+interfaces:
+  - type: web
+    name: publicUrl
+    path: /
+    prefix: "*"
+    port: 3031
+    protocol: http
+credentials:
+  - name: operator
+    description: Hub Operator DID
+    required: true
+    trustedIssuers: []
+    trustedHooks: []
+    tag: auth
+requirements:
+  - name: "@blocklet/node"
+    version: "^1.16.0"
+  - name: "@blocklet/react"
+    version: "^1.16.0"
