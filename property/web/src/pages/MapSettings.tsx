@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MAP_PROVIDERS, DEFAULT_MAP_CONFIG, validateMapKey, getMapScriptUrl } from '@openstay/theme';
-import './MapSettings.css';
+import { MAP_PROVIDERS, DEFAULT_MAP_CONFIG, validateMapKey, getMapScriptUrl } from '../utils/map-config';
 
 interface MapSettingsData {
   provider: string;
@@ -61,11 +60,9 @@ function MapSettings() {
     setTestStatus('testing');
     
     try {
-      // 创建一个隐藏的 iframe 来测试地图加载
       const scriptUrl = getMapScriptUrl(settings.provider, settings.apiKey);
-      const response = await fetch(scriptUrl, { method: 'HEAD', mode: 'no-cors' });
+      await fetch(scriptUrl, { method: 'HEAD', mode: 'no-cors' });
       
-      // 由于 CORS 限制，我们无法真正检测，只能模拟
       setTimeout(() => {
         if (validateMapKey(settings.provider, settings.apiKey)) {
           setTestStatus('success');
@@ -83,30 +80,36 @@ function MapSettings() {
   const selectedProvider = MAP_PROVIDERS.find(p => p.id === settings.provider);
 
   return (
-    <div className="map-settings">
-      <header className="page-header">
-        <h1>🗺️ 地图设置</h1>
-        <p className="page-desc">配置地图服务，让客人可以在地图上找到您的房源</p>
+    <div className="max-w-4xl mx-auto p-6">
+      <header className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">🗺️ 地图设置</h1>
+        <p className="text-gray-600">配置地图服务，让客人可以在地图上找到您的房源</p>
       </header>
 
-      <form onSubmit={handleSubmit} className="settings-form">
-        <section className="form-section">
-          <h2>选择地图服务商</h2>
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <section className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">选择地图服务商</h2>
           
-          <div className="provider-grid">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {MAP_PROVIDERS.map((provider) => (
               <div
                 key={provider.id}
-                className={`provider-card ${settings.provider === provider.id ? 'selected' : ''}`}
+                className={`cursor-pointer border-2 rounded-lg p-4 transition-all ${
+                  settings.provider === provider.id
+                    ? 'border-primary-500 bg-primary-50'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
                 onClick={() => setSettings({ ...settings, provider: provider.id })}
               >
-                <span className="provider-icon">{provider.icon}</span>
-                <div className="provider-info">
-                  <h3>{provider.name}</h3>
-                  <p>{provider.requiresKey ? '需要 API Key' : '免费使用'}</p>
+                <div className="flex items-center space-x-3">
+                  <span className="text-2xl">{provider.icon}</span>
+                  <div>
+                    <h3 className="font-medium text-gray-900">{provider.name}</h3>
+                    <p className="text-sm text-gray-500">{provider.requiresKey ? '需要 API Key' : '免费使用'}</p>
+                  </div>
                 </div>
                 {settings.provider === provider.id && (
-                  <span className="provider-check">✓</span>
+                  <span className="absolute top-2 right-2 text-primary-500 font-bold">✓</span>
                 )}
               </div>
             ))}
@@ -114,22 +117,23 @@ function MapSettings() {
         </section>
 
         {selectedProvider?.requiresKey && (
-          <section className="form-section">
-            <h2>API Key 配置</h2>
+          <section className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">API Key 配置</h2>
             
-            <div className="api-key-section">
-              <div className="form-group">
-                <label>{selectedProvider.keyName}</label>                <div className="api-key-input-wrapper">
+            <div className="space-y-4">
+              <div>
+                <label className="label">{selectedProvider.keyName}</label>
+                <div className="flex space-x-2">
                   <input
                     type={keyVisible ? 'text' : 'password'}
                     value={settings.apiKey}
                     onChange={(e) => setSettings({ ...settings, apiKey: e.target.value })}
-                    className="input api-key-input"
+                    className="input flex-1"
                     placeholder={`输入您的 ${selectedProvider.name} API Key`}
                   />
                   <button
                     type="button"
-                    className="toggle-visibility-btn"
+                    className="btn btn-ghost"
                     onClick={() => setKeyVisible(!keyVisible)}
                   >
                     {keyVisible ? '🙈' : '👁️'}
@@ -137,11 +141,11 @@ function MapSettings() {
                 </div>
                 
                 {!validateMapKey(settings.provider, settings.apiKey) && settings.apiKey && (
-                  <span className="field-error">API Key 格式不正确</span>
+                  <span className="text-sm text-red-500 mt-1">API Key 格式不正确</span>
                 )}
               </div>
               
-              <div className="api-key-actions">
+              <div className="flex space-x-3">
                 <a
                   href={selectedProvider.keyUrl}
                   target="_blank"
@@ -164,12 +168,13 @@ function MapSettings() {
                 </button>
               </div>
               
-              <div className="api-key-help">
-                <p>💡 提示：API Key 将安全存储在您的服务器上</p>
+              <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
+                <p className="text-sm text-blue-800 mb-2">💡 提示：API Key 将安全存储在您的服务器上</p>
                 <a
                   href={selectedProvider.docsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="text-sm text-blue-600 hover:text-blue-800"
                 >
                   查看 {selectedProvider.name} 文档 →
                 </a>
@@ -178,12 +183,12 @@ function MapSettings() {
           </section>
         )}
 
-        <section className="form-section">
-          <h2>默认地图视图</h2>
+        <section className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">默认地图视图</h2>
           
-          <div className="form-row">
-            <div className="form-group">
-              <label>默认纬度</label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="label">默认纬度</label>
               <input
                 type="number"
                 step="any"
@@ -200,8 +205,8 @@ function MapSettings() {
               />
             </div>
 
-            <div className="form-group">
-              <label>默认经度</label>
+            <div>
+              <label className="label">默认经度</label>
               <input
                 type="number"
                 step="any"
@@ -218,8 +223,8 @@ function MapSettings() {
               />
             </div>
 
-            <div className="form-group">
-              <label>默认缩放级别</label>
+            <div>
+              <label className="label">默认缩放级别</label>
               <input
                 type="number"
                 min="1"
@@ -232,12 +237,12 @@ function MapSettings() {
                 className="input"
                 placeholder="12"
               />
-              <p className="field-hint">1=世界, 20=建筑</p>
+              <p className="text-xs text-gray-500 mt-1">1=世界, 20=建筑</p>
             </div>
           </div>
         </section>
 
-        <div className="form-actions">
+        <div className="flex items-center space-x-4">
           <button 
             type="submit" 
             className="btn btn-primary"
@@ -246,7 +251,7 @@ function MapSettings() {
             {saving ? '保存中...' : '保存设置'}
           </button>
           
-          {saved && <span className="save-success">✅ 已保存</span>}
+          {saved && <span className="text-green-600 font-medium">✅ 已保存</span>}
         </div>
       </form>
     </div>

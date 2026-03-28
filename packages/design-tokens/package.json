@@ -1,0 +1,26 @@
+{
+  "name": "@openstay/design-tokens",
+  "version": "1.0.0",
+  "description": "OpenStay Design System - Shared tokens for Tailwind CSS and NativeWind",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "tailwind.config.js",
+    "nativewind.config.js"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "tailwindcss": "^3.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  },
+  "peerDependencies": {
+    "tailwindcss": ">=3.0.0"
+  },
+  "private": true
+}
