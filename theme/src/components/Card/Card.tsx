@@ -1,7 +1,7 @@
 import React from 'react';
 import { colors, borderRadius, shadows, spacing, typography } from '../../themes/default/index.js';
 
-interface CardProps {
+export interface CardProps {
   children: React.ReactNode;
   variant?: 'default' | 'outlined' | 'elevated';
   padding?: 'none' | 'sm' | 'md' | 'lg';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { colors, borderRadius, typography } from '../../themes/default/index.js';
 
-interface BadgeProps {
+export interface BadgeProps {
   children: React.ReactNode;
   variant?: 'default' | 'primary' | 'success' | 'warning' | 'error' | 'info';
   size?: 'sm' | 'md';

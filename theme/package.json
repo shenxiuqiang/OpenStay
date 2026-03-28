@@ -6,7 +6,8 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy-assets",
+    "copy-assets": "cp -r src/components/UniversalMap/*.css dist/components/UniversalMap/ 2>/dev/null || true",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "tsc --noEmit",

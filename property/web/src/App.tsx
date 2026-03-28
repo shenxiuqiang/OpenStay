@@ -5,6 +5,7 @@ import Rooms from './pages/Rooms';
 import Bookings from './pages/Bookings';
 import Settings from './pages/Settings';
 import MapSettings from './pages/MapSettings';
+import NFTManager from './pages/NFT/NFTManager';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="bookings" element={<Bookings />} />
         <Route path="settings" element={<Settings />} />
         <Route path="settings/map" element={<MapSettings />} />
+        <Route path="nft" element={<NFTManager />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Route>
     </Routes>

@@ -73,8 +73,8 @@ export function wgs84ToGcj02(lat: number, lon: number): [number, number] {
     return [lat, lon];
   }
   
-  const dLat = transformLat(lon - 105.0, lat - 35.0);
-  const dLon = transformLon(lon - 105.0, lat - 35.0);
+  let dLat = transformLat(lon - 105.0, lat - 35.0);
+  let dLon = transformLon(lon - 105.0, lat - 35.0);
   const radLat = (lat / 180.0) * Math.PI;
   let magic = Math.sin(radLat);
   magic = 1 - 0.00669342162296594323 * magic * magic;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { colors, borderRadius, typography, spacing } from '../../themes/default/index.js';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   helperText?: string;

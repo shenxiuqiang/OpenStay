@@ -9,6 +9,7 @@ function Layout() {
     { path: '/', label: '概览', icon: '🏠' },
     { path: '/rooms', label: '房型', icon: '🛏️' },
     { path: '/bookings', label: '订单', icon: '📋' },
+    { path: '/nft', label: 'NFT', icon: '🎫' },
   ];
 
   const isSettingsActive = location.pathname.startsWith('/settings');

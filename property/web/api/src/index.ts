@@ -12,6 +12,7 @@ import propertyRoutes from './routes/property.js';
 import roomRoutes from './routes/room.js';
 import bookingRoutes from './routes/booking.js';
 import publicRoutes from './routes/public.js';
+import nftRoutes from './routes/nft.js';
 
 dotenv.config();
 
@@ -47,6 +48,7 @@ app.use('/api/property', propertyRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/public', publicRoutes);
+app.use('/api', nftRoutes);
 
 // Static files (production build)
 const staticPath = path.join(__dirname, '../../dist');

@@ -12,7 +12,14 @@ export interface MapMarker {
   onClick?: () => void;
 }
 
-interface UniversalMapProps {
+export interface MapBounds {
+  north: number;
+  south: number;
+  east: number;
+  west: number;
+}
+
+export interface UniversalMapProps {
   config: MapConfig;
   markers?: MapMarker[];
   center?: { lat: number; lng: number };
@@ -27,18 +34,11 @@ interface UniversalMapProps {
   children?: React.ReactNode;
 }
 
-interface MapBounds {
-  north: number;
-  south: number;
-  east: number;
-  west: number;
-}
-
 declare global {
   interface Window {
-    google?: typeof google;
-    AMap?: typeof AMap;
-    BMap?: typeof BMap;
+    google?: unknown;
+    AMap?: unknown;
+    BMap?: unknown;
     initMap?: () => void;
   }
 }
@@ -129,9 +129,10 @@ export const UniversalMap: React.FC<UniversalMapProps> = ({
 
   // Google Maps 初始化
   const initGoogleMap = () => {
-    if (!window.google || !mapRef.current) return;
+    const g = window.google as any;
+    if (!g?.maps || !mapRef.current) return;
 
-    const map = new window.google.maps.Map(mapRef.current, {
+    const map = new g.maps.Map(mapRef.current, {
       center: mapCenter,
       zoom: mapZoom,
       mapTypeControl: false,
@@ -163,9 +164,10 @@ export const UniversalMap: React.FC<UniversalMapProps> = ({
 
     // 监听地图点击
     if (onMapClick) {
-      map.addListener('click', (e: google.maps.MapMouseEvent) => {
-        if (e.latLng) {
-          onMapClick(e.latLng.lat(), e.latLng.lng());
+      map.addListener('click', (e: unknown) => {
+        const event = e as { latLng?: { lat: () => number; lng: () => number } };
+        if (event.latLng) {
+          onMapClick(event.latLng.lat(), event.latLng.lng());
         }
       });
     }
@@ -173,9 +175,10 @@ export const UniversalMap: React.FC<UniversalMapProps> = ({
 
   // 高德地图初始化
   const initAMap = () => {
-    if (!window.AMap || !mapRef.current) return;
+    const AMap = window.AMap as any;
+    if (!AMap || !mapRef.current) return;
 
-    const map = new window.AMap.Map(mapRef.current, {
+    const map = new AMap.Map(mapRef.current, {
       center: [mapCenter.lng, mapCenter.lat],
       zoom: mapZoom,
       viewMode: '2D',
@@ -208,10 +211,11 @@ export const UniversalMap: React.FC<UniversalMapProps> = ({
 
   // 百度地图初始化
   const initBaiduMap = () => {
-    if (!window.BMap || !mapRef.current) return;
+    const BMap = window.BMap as any;
+    if (!BMap || !mapRef.current) return;
 
-    const map = new window.BMap.Map(mapRef.current);
-    const point = new window.BMap.Point(mapCenter.lng, mapCenter.lat);
+    const map = new BMap.Map(mapRef.current);
+    const point = new BMap.Point(mapCenter.lng, mapCenter.lat);
     map.centerAndZoom(point, mapZoom);
     map.enableScrollWheelZoom();
 
@@ -265,7 +269,8 @@ export const UniversalMap: React.FC<UniversalMapProps> = ({
         mapInstanceRef.current.setCenter([mapCenter.lng, mapCenter.lat]);
         break;
       case 'baidu':
-        const point = new window.BMap.Point(mapCenter.lng, mapCenter.lat);
+        const BMap = window.BMap as any;
+        const point = new BMap.Point(mapCenter.lng, mapCenter.lat);
         mapInstanceRef.current.setCenter(point);
         break;
     }
@@ -293,19 +298,20 @@ export const UniversalMap: React.FC<UniversalMapProps> = ({
     let mapMarker: any;
 
     switch (config.provider) {
-      case 'google':
-        mapMarker = new window.google!.maps.Marker({
+      case 'google': {
+        const g = window.google as any;
+        mapMarker = new g.maps.Marker({
           position: { lat: marker.lat, lng: marker.lng },
           map,
           title: marker.title,
           animation: marker.id === selectedMarkerId 
-            ? window.google!.maps.Animation.BOUNCE 
+            ? g.maps.Animation.BOUNCE 
             : undefined,
         });
 
         if (marker.price) {
           // 添加价格标签
-          const label = new window.google!.maps.OverlayView();
+          const label = new g.maps.OverlayView();
           label.setMap(map);
         }
 
@@ -314,14 +320,16 @@ export const UniversalMap: React.FC<UniversalMapProps> = ({
           marker.onClick?.();
         });
         break;
+      }
 
-      case 'amap':
-        mapMarker = new window.AMap!.Marker({
+      case 'amap': {
+        const AMap = window.AMap as any;
+        mapMarker = new AMap.Marker({
           position: [marker.lng, marker.lat],
           title: marker.title,
           label: marker.price ? {
             content: `¥${marker.price}`,
-            offset: new window.AMap!.Pixel(0, -30),
+            offset: new AMap.Pixel(0, -30),
           } : undefined,
         });
 
@@ -332,10 +340,12 @@ export const UniversalMap: React.FC<UniversalMapProps> = ({
 
         map.add(mapMarker);
         break;
+      }
 
-      case 'baidu':
-        const point = new window.BMap!.Point(marker.lng, marker.lat);
-        mapMarker = new window.BMap!.Marker(point);
+      case 'baidu': {
+        const BMap = window.BMap as any;
+        const point = new BMap.Point(marker.lng, marker.lat);
+        mapMarker = new BMap.Marker(point);
         map.addOverlay(mapMarker);
 
         mapMarker.addEventListener('click', () => {
@@ -343,6 +353,7 @@ export const UniversalMap: React.FC<UniversalMapProps> = ({
           marker.onClick?.();
         });
         break;
+      }
     }
 
     markersRef.current.push(mapMarker);
@@ -392,9 +403,12 @@ export const UniversalMap: React.FC<UniversalMapProps> = ({
                   case 'amap':
                     mapInstanceRef.current?.setCenter([longitude, latitude]);
                     break;
-                  case 'baidu':
-                    const point = new window.BMap.Point(longitude, latitude);
+                  case 'baidu': {
+                    const BMap = window.BMap as any;
+                    const point = new BMap.Point(longitude, latitude);
                     mapInstanceRef.current?.setCenter(point);
+                    break;
+                  }
                     break;
                 }
               });
