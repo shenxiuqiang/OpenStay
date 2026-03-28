@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: openstay-postgres
+    environment:
+      POSTGRES_USER: openstay
+      POSTGRES_PASSWORD: openstay_password
+      POSTGRES_DB: openstay
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openstay"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Property Studio
+  property-studio:
+    build:
+      context: .
+      dockerfile: property/web/Dockerfile
+    container_name: openstay-property
+    environment:
+      NODE_ENV: production
+      PORT: 3030
+      DATABASE_URL: postgresql://openstay:openstay_password@postgres:5432/openstay_property
+    ports:
+      - "3030:3030"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Hospitality Hub
+  hospitality-hub:
+    build:
+      context: .
+      dockerfile: hub/web/Dockerfile
+    container_name: openstay-hub
+    environment:
+      NODE_ENV: production
+      PORT: 3031
+      DATABASE_URL: postgresql://openstay:openstay_password@postgres:5432/openstay_hub
+    ports:
+      - "3031:3031"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Travel App
+  travel-app:
+    build:
+      context: .
+      dockerfile: travel-app/web/Dockerfile
+    container_name: openstay-travel
+    environment:
+      NODE_ENV: production
+      PORT: 3032
+      DATABASE_URL: postgresql://openstay:openstay_password@postgres:5432/openstay_travel
+    ports:
+      - "3032:3032"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Redis (optional - for caching and sessions)
+  redis:
+    image: redis:7-alpine
+    container_name: openstay-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:

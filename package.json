@@ -7,8 +7,11 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "test": "turbo run test",
-    "clean": "turbo run clean"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "clean": "turbo run clean",
+    "type-check": "turbo run type-check"
   },
   "engines": {
     "node": ">=18.18.0",
@@ -27,7 +30,12 @@
   "author": "OpenStay Team",
   "license": "MIT",
   "devDependencies": {
-    "turbo": "^2.0.0"
+    "@types/node": "^20.11.0",
+    "turbo": "^2.0.0",
+    "vitest": "^1.2.0",
+    "@testing-library/react": "^14.1.0",
+    "@testing-library/jest-dom": "^6.2.0",
+    "jsdom": "^24.0.0"
   },
   "packageManager": "pnpm@9.0.0",
   "workspaces": [

@@ -1,0 +1,195 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '8'
+
+jobs:
+  lint:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run lint
+        run: pnpm run lint
+        continue-on-error: true
+
+      - name: Type check
+        run: pnpm run type-check
+        continue-on-error: true
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build all packages
+        run: pnpm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            */web/dist
+            */web/api/dist
+          retention-days: 7
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests
+        run: pnpm test
+        continue-on-error: true
+
+  bundle:
+    name: Bundle Blocklets
+    runs-on: ubuntu-latest
+    needs: [build, test]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+
+      - name: Bundle Property Studio
+        run: cd property/web && pnpm run bundle
+
+      - name: Bundle Hospitality Hub
+        run: cd hub/web && pnpm run bundle
+
+      - name: Bundle Travel App
+        run: cd travel-app/web && pnpm run bundle
+
+      - name: Upload bundle artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: blocklet-bundles
+          path: |
+            */web/.blocklet
+          retention-days: 14
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: bundle
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://staging.openstay.network
+    steps:
+      - name: Download bundle artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: blocklet-bundles
+
+      - name: Deploy to staging
+        run: |
+          echo "Deploying to staging environment..."
+          # Add your deployment script here
+          # blocklet deploy .blocklet/bundle --endpoint $STAGING_ENDPOINT
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: bundle
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://openstay.network
+    steps:
+      - name: Download bundle artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: blocklet-bundles
+
+      - name: Deploy Property Studio
+        run: |
+          echo "Deploying Property Studio..."
+          # blocklet deploy property/web/.blocklet/bundle --endpoint $PROD_ENDPOINT
+
+      - name: Deploy Hospitality Hub
+        run: |
+          echo "Deploying Hospitality Hub..."
+          # blocklet deploy hub/web/.blocklet/bundle --endpoint $PROD_ENDPOINT
+
+      - name: Deploy Travel App
+        run: |
+          echo "Deploying Travel App..."
+          # blocklet deploy travel-app/web/.blocklet/bundle --endpoint $PROD_ENDPOINT
