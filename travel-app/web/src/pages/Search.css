@@ -61,9 +61,99 @@
   cursor: pointer;
 }
 
+/* Location Button */
+.location-btn {
+  padding: 10px 16px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.location-btn:hover {
+  background: #1d4ed8;
+}
+
+.location-error {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: #fef2f2;
+  border-radius: 6px;
+}
+
+/* Search Toolbar */
+.search-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 .search-results-count {
   color: #6b7280;
   font-size: 0.875rem;
+}
+
+.search-results-count strong {
+  color: #111;
+  font-weight: 600;
+}
+
+.search-mode {
+  color: #2563eb;
+  font-weight: 500;
+}
+
+.search-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sort-select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: white;
+  cursor: pointer;
+}
+
+/* View Toggle */
+.view-toggle {
+  display: flex;
+  gap: 4px;
+  background: #f3f4f6;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.view-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.2s;
+}
+
+.view-btn.active {
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.view-btn:not(.active):hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .search-content {
@@ -110,9 +200,14 @@
   display: block;
 }
 
-.property-card:hover {
+.property-card:hover,
+.property-card.highlighted {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
+}
+
+.property-card.highlighted {
+  border: 2px solid #2563eb;
 }
 
 .property-image-wrapper {
@@ -161,6 +256,12 @@
 .property-location {
   color: #6b7280;
   font-size: 0.875rem;
+}
+
+.distance-badge {
+  color: #2563eb;
+  font-weight: 500;
+  margin-left: 4px;
 }
 
 .property-rating {
@@ -249,7 +350,105 @@
   color: #6b7280;
 }
 
+/* Map View */
+.map-view-container {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  height: 600px;
+}
+
+.map-property-list {
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.map-property-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.map-property-list::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.map-property-list::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.map-property-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.2s;
+}
+
+.map-property-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.map-property-item img {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.map-property-info {
+  flex: 1;
+}
+
+.map-property-info h4 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #111;
+}
+
+.map-property-info p {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.map-property-info .distance {
+  color: #2563eb;
+}
+
+.map-property-info .price {
+  font-weight: 600;
+  color: #111;
+}
+
 /* Responsive */
+@media (max-width: 1024px) {
+  .map-view-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 400px auto;
+    height: auto;
+  }
+  
+  .map-property-list {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 8px;
+  }
+  
+  .map-property-item {
+    flex-shrink: 0;
+    width: 280px;
+    margin-bottom: 0;
+  }
+}
+
 @media (max-width: 768px) {
   .search-filters {
     flex-direction: column;
@@ -262,6 +461,16 @@
   
   .price-filter .filter-input {
     flex: 1;
+  }
+  
+  .search-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .search-controls {
+    width: 100%;
+    justify-content: space-between;
   }
   
   .properties-grid {

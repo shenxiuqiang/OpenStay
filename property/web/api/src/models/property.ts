@@ -213,6 +213,8 @@ Property.init(
       { fields: ['city'] },
       { fields: ['country'] },
       { fields: ['status'] },
+      { fields: ['latitude', 'longitude'] },
+      { fields: ['isPublic', 'status'] },
     ],
   }
 );
