@@ -8,6 +8,12 @@ build/
 .next/
 *.tsbuildinfo
 
+# Turbo
+.turbo/
+
+# Lock file (managed by workspace root)
+pnpm-lock.yaml
+
 # Blocklet
 .blocklet/
 
