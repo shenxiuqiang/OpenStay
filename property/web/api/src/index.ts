@@ -13,6 +13,8 @@ import roomRoutes from './routes/room.js';
 import bookingRoutes from './routes/booking.js';
 import publicRoutes from './routes/public.js';
 import nftRoutes from './routes/nft.js';
+import { createMCPRouter } from '@openstay/mcp';
+import { sequelize } from './libs/db.js';
 
 dotenv.config();
 
@@ -49,6 +51,9 @@ app.use('/api/rooms', roomRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/public', publicRoutes);
 app.use('/api', nftRoutes);
+
+// MCP (Model Context Protocol) routes
+app.use('/api/mcp', createMCPRouter({ sequelize }));
 
 // Static files (production build)
 const staticPath = path.join(__dirname, '../../dist');

@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "openstay": {
+      "name": "OpenStay Accommodation Platform",
+      "description": "Decentralized accommodation booking through MCP",
+      "command": "node",
+      "args": ["./packages/mcp/dist/server.js"],
+      "env": {
+        "NODE_ENV": "development",
+        "DATABASE_URL": "./data/openstay.db"
+      },
+      "transport": "stdio"
+    },
+    "openstay-http": {
+      "name": "OpenStay (HTTP)",
+      "description": "OpenStay MCP via HTTP endpoint",
+      "url": "http://localhost:3030/api/mcp",
+      "transport": "http"
+    }
+  }
+}

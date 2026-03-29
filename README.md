@@ -54,6 +54,8 @@ pnpm run dev
 
 ```
 OpenStay/
+├── packages/
+│   └── mcp/               # MCP Server - AI 代理接口
 ├── property/web/          # Property Studio
 │   ├── src/               # 前端源码
 │   ├── api/               # 后端 API
@@ -68,6 +70,8 @@ OpenStay/
 │   └── package.json
 ├── theme/                 # 共享主题包
 │   └── src/               # 组件和样式
+├── docs/                  # 文档
+│   └── mcp-integration-guide.md
 ├── pnpm-workspace.yaml    # 工作区配置
 └── turbo.json             # 构建配置
 ```
@@ -92,6 +96,37 @@ OpenStay/
 - 🗺️ 地图浏览
 - 🛒 在线预订
 - 📋 行程管理
+
+### 🤖 MCP (Model Context Protocol) 支持
+
+OpenStay 现已支持 MCP，允许 AI 代理通过标准化协议与平台交互：
+
+| 功能类别 | 支持的工具 |
+|----------|-----------|
+| **房源管理** | `property/search`, `property/get`, `property/create`, `property/update` |
+| **预订管理** | `booking/create`, `booking/get`, `booking/list`, `booking/checkAvailability` |
+| **智能搜索** | `search/natural`, `search/nearby`, `search/filterFacilities`, `search/compare` |
+| **身份管理** | `identity/verify`, `identity/getProfile`, `identity/getBookings` |
+
+**快速使用：**
+
+```bash
+# MCP 端点已集成到 Property API
+curl http://localhost:3030/api/mcp/health
+
+# 在 Claude Desktop 中配置 MCP
+# 编辑 ~/Library/Application Support/Claude/claude_desktop_config.json
+{
+  "mcpServers": {
+    "openstay": {
+      "command": "node",
+      "args": ["./packages/mcp/dist/server.js"]
+    }
+  }
+}
+```
+
+详见 [MCP 使用指南](./MCP-USAGE.md) 和 [MCP 技术文档](./docs/mcp-integration-guide.md)。
 
 ## 🗺️ 地图功能
 

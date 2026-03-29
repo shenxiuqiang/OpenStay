@@ -42,9 +42,9 @@
   },
   "packageManager": "pnpm@9.0.0",
   "workspaces": [
+    "packages/*",
     "property/web",
     "hub/web",
-    "travel-app/*",
-    "theme/*"
+    "travel-app/*"
   ]
 }
